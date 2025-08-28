@@ -6,50 +6,6 @@ part of 'types.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class Enum1Adapter extends TypeAdapter<Enum1> {
-  @override
-  final int typeId = 3;
-
-  @override
-  Enum1 read(BinaryReader reader) {
-    switch (reader.readByte()) {
-      case 0:
-        return Enum1.emumValue1;
-      case 1:
-        return Enum1.emumValue2;
-      case 2:
-        return Enum1.emumValue3;
-      default:
-        return Enum1.emumValue2;
-    }
-  }
-
-  @override
-  void write(BinaryWriter writer, Enum1 obj) {
-    switch (obj) {
-      case Enum1.emumValue1:
-        writer.writeByte(0);
-        break;
-      case Enum1.emumValue2:
-        writer.writeByte(1);
-        break;
-      case Enum1.emumValue3:
-        writer.writeByte(2);
-        break;
-    }
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Enum1Adapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
 class Class1Adapter extends TypeAdapter<Class1> {
   @override
   final int typeId = 1;
@@ -160,6 +116,50 @@ class EmptyClassAdapter extends TypeAdapter<EmptyClass> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is EmptyClassAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class Enum1Adapter extends TypeAdapter<Enum1> {
+  @override
+  final int typeId = 3;
+
+  @override
+  Enum1 read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return Enum1.emumValue1;
+      case 1:
+        return Enum1.emumValue2;
+      case 2:
+        return Enum1.emumValue3;
+      default:
+        return Enum1.emumValue2;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, Enum1 obj) {
+    switch (obj) {
+      case Enum1.emumValue1:
+        writer.writeByte(0);
+        break;
+      case Enum1.emumValue2:
+        writer.writeByte(1);
+        break;
+      case Enum1.emumValue3:
+        writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Enum1Adapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

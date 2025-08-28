@@ -13,7 +13,7 @@ import 'type_helper.dart';
 
 class ClassBuilder extends Builder {
   ClassBuilder(
-    ClassElement cls,
+    InterfaceElement cls,
     List<AdapterField> getters,
     List<AdapterField> setters,
   ) : super(cls, getters, setters);

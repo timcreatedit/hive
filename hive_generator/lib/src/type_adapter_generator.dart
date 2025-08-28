@@ -36,7 +36,7 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
     var typeId = getTypeId(annotation);
 
     var adapterName = getAdapterName(cls.name, annotation);
-    var builder = cls.isDartCoreEnum
+    var builder = cls.kind == ElementKind.ENUM
         ? EnumBuilder(cls, getters)
         : ClassBuilder(cls, getters, setters);
 
@@ -68,14 +68,14 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
     ''';
   }
 
-  ClassElement getClass(Element element) {
+  InterfaceElement getClass(Element element) {
     check(element.kind == ElementKind.CLASS || element.kind == ElementKind.ENUM,
         'Only classes or enums are allowed to be annotated with @HiveType.');
 
-    return element as ClassElement;
+    return element as InterfaceElement;
   }
 
-  Set<String> getAllAccessorNames(ClassElement cls) {
+  Set<String> getAllAccessorNames(InterfaceElement cls) {
     var accessorNames = <String>{};
 
     var supertypes = cls.allSupertypes.map((it) => it.element);
@@ -94,7 +94,7 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
   }
 
   List<List<AdapterField>> getAccessors(
-      ClassElement cls, LibraryElement library) {
+      InterfaceElement cls, LibraryElement library) {
     var accessorNames = getAllAccessorNames(cls);
 
     var getters = <AdapterField>[];
