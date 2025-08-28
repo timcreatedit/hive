@@ -36,7 +36,7 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
     var typeId = getTypeId(annotation);
 
     var adapterName = getAdapterName(cls.name, annotation);
-    var builder = cls.isEnum
+    var builder = cls.isDartCoreEnum
         ? EnumBuilder(cls, getters)
         : ClassBuilder(cls, getters, setters);
 
@@ -103,9 +103,9 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
       var getter = cls.lookUpGetter(name, library);
       if (getter != null) {
         var getterAnn =
-            getHiveFieldAnn(getter.variable) ?? getHiveFieldAnn(getter);
+            getHiveFieldAnn(getter.variable2!) ?? getHiveFieldAnn(getter);
         if (getterAnn != null) {
-          var field = getter.variable;
+          var field = getter.variable2!;
           getters.add(AdapterField(
             getterAnn.index,
             field.name,
@@ -118,9 +118,9 @@ class TypeAdapterGenerator extends GeneratorForAnnotation<HiveType> {
       var setter = cls.lookUpSetter('$name=', library);
       if (setter != null) {
         var setterAnn =
-            getHiveFieldAnn(setter.variable) ?? getHiveFieldAnn(setter);
+            getHiveFieldAnn(setter.variable2!) ?? getHiveFieldAnn(setter);
         if (setterAnn != null) {
-          var field = setter.variable;
+          var field = setter.variable2!;
           setters.add(AdapterField(
             setterAnn.index,
             field.name,
