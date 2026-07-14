@@ -3,7 +3,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:hive/hive.dart';
 import 'package:source_gen/source_gen.dart';
 
-final _hiveFieldChecker = const TypeChecker.fromRuntime(HiveField);
+final _hiveFieldChecker = const TypeChecker.typeNamed(HiveField);
 
 class HiveFieldInfo {
   HiveFieldInfo(this.index, this.defaultValue);
@@ -32,9 +32,11 @@ bool isLibraryNNBD(Element element) {
   }
 }
 
-Iterable<InterfaceElement> getTypeAndAllSupertypes(ClassElement cls) {
+Iterable<InterfaceElement> getTypeAndAllSupertypes(InterfaceElement cls) {
   var types = <InterfaceElement>{};
   types.add(cls);
+  // Analyzer 8 temporarily marks this replacement element API experimental.
+  // ignore: experimental_member_use
   types.addAll(cls.allSupertypes.map((it) => it.element));
   return types;
 }

@@ -14,7 +14,7 @@ class MockEnumElement implements Element {
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-// Mock class element  
+// Mock class element
 class MockClassElement implements Element, InterfaceElement {
   @override
   ElementKind get kind => ElementKind.CLASS;
@@ -42,8 +42,10 @@ void main() {
   group('generateName', () {
     test('.generateName()', () {
       expect(TypeAdapterGenerator.generateName(r'_$User'), 'UserAdapter');
-      expect(TypeAdapterGenerator.generateName(r'_$_SomeClass'),
-          'SomeClassAdapter');
+      expect(
+        TypeAdapterGenerator.generateName(r'_$_SomeClass'),
+        'SomeClassAdapter',
+      );
     });
   });
 
@@ -66,7 +68,11 @@ void main() {
       final enumElement = MockEnumElement();
       // This should not throw when checking the kind
       expect(enumElement.kind, ElementKind.ENUM);
-      expect(enumElement.kind == ElementKind.CLASS || enumElement.kind == ElementKind.ENUM, isTrue);
+      expect(
+        enumElement.kind == ElementKind.CLASS ||
+            enumElement.kind == ElementKind.ENUM,
+        isTrue,
+      );
     });
   });
 }
