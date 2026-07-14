@@ -18,23 +18,28 @@ class ClassBuilder extends Builder {
     List<AdapterField> setters,
   ) : super(cls, getters, setters);
 
-  var hiveListChecker = const TypeChecker.fromRuntime(HiveList);
-  var listChecker = const TypeChecker.fromRuntime(List);
-  var mapChecker = const TypeChecker.fromRuntime(Map);
-  var setChecker = const TypeChecker.fromRuntime(Set);
-  var iterableChecker = const TypeChecker.fromRuntime(Iterable);
-  var uint8ListChecker = const TypeChecker.fromRuntime(Uint8List);
+  // HiveList is part of Hive's public generator contract despite its
+  // experimental annotation.
+  // ignore: experimental_member_use
+  var hiveListChecker = const TypeChecker.typeNamed(HiveList);
+  var listChecker = const TypeChecker.typeNamed(List);
+  var mapChecker = const TypeChecker.typeNamed(Map);
+  var setChecker = const TypeChecker.typeNamed(Set);
+  var iterableChecker = const TypeChecker.typeNamed(Iterable);
+  var uint8ListChecker = const TypeChecker.typeNamed(Uint8List);
 
   @override
   String buildRead() {
-    var constr = cls.constructors.firstOrNullWhere((it) => it.name.isEmpty);
+    var constr = cls.constructors.firstOrNullWhere(
+      (it) => it.name?.isEmpty ?? true,
+    );
     check(constr != null, 'Provide an unnamed constructor.');
 
     // The remaining fields to initialize.
     var fields = setters.toList();
 
     // Empty classes
-    if (constr!.parameters.isEmpty && fields.isEmpty) {
+    if (constr!.formalParameters.isEmpty && fields.isEmpty) {
       return 'return ${cls.name}();';
     }
 
@@ -48,7 +53,7 @@ class ClassBuilder extends Builder {
     return ${cls.name}(
     ''');
 
-    for (var param in constr.parameters) {
+    for (var param in constr.formalParameters) {
       var field = fields.firstOrNullWhere((it) => it.name == param.name);
       // Final fields
       field ??= getters.firstOrNullWhere((it) => it.name == param.name);
@@ -56,11 +61,9 @@ class ClassBuilder extends Builder {
         if (param.isNamed) {
           code.write('${param.name}: ');
         }
-        code.write(_value(
-          param.type,
-          'fields[${field.index}]',
-          field.defaultValue,
-        ));
+        code.write(
+          _value(param.type, 'fields[${field.index}]', field.defaultValue),
+        );
         code.writeln(',');
         fields.remove(field);
       }
@@ -72,11 +75,9 @@ class ClassBuilder extends Builder {
     // as initializing formals. We do so using cascades.
     for (var field in fields) {
       code.write('..${field.name} = ');
-      code.writeln(_value(
-        field.type,
-        'fields[${field.index}]',
-        field.defaultValue,
-      ));
+      code.writeln(
+        _value(field.type, 'fields[${field.index}]', field.defaultValue),
+      );
     }
 
     code.writeln(';');
@@ -217,6 +218,5 @@ String _suffixFromType(DartType type) {
 }
 
 String _displayString(DartType e) {
-  var suffix = _suffixFromType(e);
-  return '${e.getDisplayString(withNullability: false)}$suffix';
+  return e.getDisplayString();
 }
