@@ -30,9 +30,7 @@ class ClassBuilder extends Builder {
 
   @override
   String buildRead() {
-    var constr = cls.constructors.firstOrNullWhere(
-      (it) => it.name?.isEmpty ?? true,
-    );
+    var constr = cls.constructors.firstOrNullWhere((it) => it.name == 'new');
     check(constr != null, 'Provide an unnamed constructor.');
 
     // The remaining fields to initialize.
