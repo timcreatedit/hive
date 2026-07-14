@@ -4,7 +4,7 @@ import 'package:hive_generator/src/helper.dart';
 
 class EnumBuilder extends Builder {
   EnumBuilder(InterfaceElement cls, List<AdapterField> getters)
-    : super(cls, getters);
+      : super(cls, getters);
 
   @override
   String buildRead() {
@@ -20,9 +20,8 @@ class EnumBuilder extends Builder {
     }
 
     var defaultField = getters.firstWhere(
-      (it) => it.defaultValue?.toBoolValue() == true,
-      orElse: () => getters.first,
-    );
+        (it) => it.defaultValue?.toBoolValue() == true,
+        orElse: () => getters.first);
     code.writeln('''
       default:
         return ${cls.name}.${defaultField.name};
