@@ -1,13 +1,12 @@
-import 'dart:typed_data';
+// Analyzer 8 marks required replacement element APIs as experimental.
+// ignore_for_file: experimental_member_use
 
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_generator/src/builder.dart';
 import 'package:hive_generator/src/helper.dart';
-import 'package:source_gen/source_gen.dart';
 
 import 'type_helper.dart';
 
@@ -18,18 +17,12 @@ class ClassBuilder extends Builder {
     List<AdapterField> setters,
   ) : super(cls, getters, setters);
 
-  // HiveList is part of Hive's public generator contract despite its
-  // experimental annotation.
-  var hiveListChecker = const TypeChecker.typeNamed(
-    // ignore: experimental_member_use
-    HiveList,
-    inPackage: 'hive',
-  );
-  var listChecker = const TypeChecker.typeNamed(List, inSdk: true);
-  var mapChecker = const TypeChecker.typeNamed(Map, inSdk: true);
-  var setChecker = const TypeChecker.typeNamed(Set, inSdk: true);
-  var iterableChecker = const TypeChecker.typeNamed(Iterable, inSdk: true);
-  var uint8ListChecker = const TypeChecker.typeNamed(Uint8List, inSdk: true);
+  var hiveListChecker = const _TypeMatcher('HiveList', package: 'hive');
+  var listChecker = const _TypeMatcher('List', sdk: true);
+  var mapChecker = const _TypeMatcher('Map', sdk: true);
+  var setChecker = const _TypeMatcher('Set', sdk: true);
+  var iterableChecker = const _TypeMatcher('Iterable', sdk: true);
+  var uint8ListChecker = const _TypeMatcher('Uint8List', sdk: true);
 
   @override
   String buildRead() {
@@ -220,4 +213,29 @@ String _suffixFromType(DartType type) {
 
 String _displayString(DartType e) {
   return e.getDisplayString();
+}
+
+class _TypeMatcher {
+  const _TypeMatcher(this.name, {this.package, this.sdk = false});
+
+  final String name;
+  final String? package;
+  final bool sdk;
+
+  bool isExactlyType(DartType type) => _matches(type.element);
+
+  bool isAssignableFromType(DartType type) {
+    if (isExactlyType(type)) return true;
+    if (type is! InterfaceType) return false;
+    return type.allSupertypes.any((supertype) => _matches(supertype.element));
+  }
+
+  bool _matches(Element? element) {
+    if (element?.name != name) return false;
+    final uri = element?.library?.firstFragment.source.uri;
+    if (uri == null) return false;
+    if (sdk) return uri.scheme == 'dart';
+    return package == null ||
+        (uri.scheme == 'package' && uri.pathSegments.first == package);
+  }
 }
