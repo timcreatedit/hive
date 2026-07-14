@@ -20,13 +20,16 @@ class ClassBuilder extends Builder {
 
   // HiveList is part of Hive's public generator contract despite its
   // experimental annotation.
-  // ignore: experimental_member_use
-  var hiveListChecker = const TypeChecker.typeNamed(HiveList);
-  var listChecker = const TypeChecker.typeNamed(List);
-  var mapChecker = const TypeChecker.typeNamed(Map);
-  var setChecker = const TypeChecker.typeNamed(Set);
-  var iterableChecker = const TypeChecker.typeNamed(Iterable);
-  var uint8ListChecker = const TypeChecker.typeNamed(Uint8List);
+  var hiveListChecker = const TypeChecker.typeNamed(
+    // ignore: experimental_member_use
+    HiveList,
+    inPackage: 'hive',
+  );
+  var listChecker = const TypeChecker.typeNamed(List, inSdk: true);
+  var mapChecker = const TypeChecker.typeNamed(Map, inSdk: true);
+  var setChecker = const TypeChecker.typeNamed(Set, inSdk: true);
+  var iterableChecker = const TypeChecker.typeNamed(Iterable, inSdk: true);
+  var uint8ListChecker = const TypeChecker.typeNamed(Uint8List, inSdk: true);
 
   @override
   String buildRead() {
